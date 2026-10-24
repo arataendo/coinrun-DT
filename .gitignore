@@ -6,9 +6,9 @@ venv/
 .pytest_cache/
 
 # 生成物
-data/
-checkpoints/
-runs/
+/data/
+/checkpoints/
+/runs/
 *.npz
 *.npy
 *.pt
