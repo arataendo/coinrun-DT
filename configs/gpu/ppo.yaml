@@ -1,0 +1,18 @@
+# PPO（Procgen 論文の標準設定, easy）。GPU サーバ向け
+total_steps: 25000000
+num_envs: 64
+num_steps: 256
+lr: 0.0005
+epochs: 3
+num_minibatches: 8
+gamma: 0.999
+gae_lambda: 0.95
+clip_coef: 0.2
+ent_coef: 0.01
+distribution_mode: easy
+num_levels: 0            # 0 = ランダムなステージ
+save_every_steps: 1000000
+out_dir: checkpoints/gpu/ppo
+log_dir: runs/gpu/ppo
+seed: 0
+device: auto

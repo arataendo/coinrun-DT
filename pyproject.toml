@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "coinrun-dt"
+version = "0.1.0"
+description = "Decision Transformer on Procgen CoinRun and DT-based level difficulty evaluation"
+requires-python = ">=3.8"
+dependencies = [
+    "torch>=2.0",
+    "procgen==0.10.7",
+    "gym3",
+    "numpy",
+    "pyyaml",
+    "pandas",
+    "scipy",
+    "matplotlib",
+    "tensorboard",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

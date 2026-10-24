@@ -1,0 +1,11 @@
+# procgen 0.10.7 は Python 3.10 以下の wheel のみ提供されている
+torch>=2.0
+procgen==0.10.7
+gym3
+numpy<2
+pyyaml
+pandas
+scipy
+matplotlib
+tensorboard
+pytest

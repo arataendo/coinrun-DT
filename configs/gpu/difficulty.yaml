@@ -1,0 +1,19 @@
+dt_ckpt: checkpoints/gpu/dt/dt_final.pt
+ppo_ckpt: checkpoints/gpu/ppo        # ディレクトリなら最新のチェックポイント
+level_start: 0
+num_eval_levels: 1000
+distribution_mode: easy
+target_returns: [10.0, 5.0, 0.0]
+rollouts_per_level: 32
+sample: true
+temperature: 1.0
+steps_weight: 0.5
+reference_source: ppo
+ppo_reference_rollouts: 16
+model_metric_weights:
+  mean_action_entropy: 1.0
+  expert_nll: 1.0
+  rtg_kl: 0.0
+out_dir: runs/gpu/difficulty
+seed: 0
+device: auto
