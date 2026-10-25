@@ -10,7 +10,8 @@
 # 軌跡収集は途中から再開できないので、最初からやり直す。
 #
 # 環境変数:
-#   NUM_THREADS  torch の CPU スレッド数（既定: 全コア。共用サーバでは減らす）
+#   NUM_THREADS  torch の CPU スレッド数（既定: コア数と 16 の小さい方。この規模のモデルでは
+#                スレッドを増やしすぎると、取り合いでかえって遅くなる）
 #   FROM         この工程から後の印を消して再実行する（ppo / collect / dt / difficulty）。
 #                PPO と DT はチェックポイントがあればそこから続けるので、最初から学習し直すときは
 #                checkpoints/<設定名>/ppo や dt を消す
@@ -26,7 +27,8 @@ elif [[ -x .venv/Scripts/python.exe ]]; then
 else
   PY=python
 fi
-NUM_THREADS=${NUM_THREADS:-$(nproc 2>/dev/null || echo 4)}
+CORES=$(nproc 2>/dev/null || echo 4)
+NUM_THREADS=${NUM_THREADS:-$(( CORES < 16 ? CORES : 16 ))}
 export OMP_NUM_THREADS=$NUM_THREADS MKL_NUM_THREADS=$NUM_THREADS PYTHONUNBUFFERED=1 PYTHONIOENCODING=utf-8
 
 STEPS=(ppo collect dt difficulty)

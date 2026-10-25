@@ -18,7 +18,7 @@ tail -f pipeline.log
 ```
 
 - `setup_server.sh` は Python 3.10 を必要とする（procgen 0.10.7 は 3.10 以下でしか入らない）。`python3.10` がなければ `PYTHON=/path/to/python3.10` で指定する。`uv` があれば自動で使う。
-- 共用サーバでは `NUM_THREADS=16 nohup bash scripts/run_pipeline.sh ...` のように、使うコア数を絞る（既定は全コア）。
+- torch のスレッド数は、既定でコア数と 16 の小さい方。変えるときは `NUM_THREADS=8 nohup bash scripts/run_pipeline.sh ...` のように指定する。
 - 止まっても、同じコマンドで再実行すれば続きから再開する。
   - 終わった工程は `runs/cpu/.done/` の印を見て飛ばす。
   - PPO と DT は最新のチェックポイントから続ける。
