@@ -22,7 +22,7 @@ import torch
 import yaml
 
 from coinrun_dt.config import load_config
-from coinrun_dt.difficulty.analyze import analyze
+from coinrun_dt.difficulty.analyze import analyze, combine_model_metrics
 from coinrun_dt.difficulty.model_metrics import dt_greedy_reference, model_metrics, pick_reference
 from coinrun_dt.difficulty.rollout_metrics import rollout_metrics
 from coinrun_dt.dt.model import load_dt
@@ -61,21 +61,6 @@ class DifficultyConfig:
         if self.level_seeds is not None:
             return list(self.level_seeds)
         return list(range(self.level_start, self.level_start + self.num_eval_levels))
-
-
-def zscore(x: pd.Series) -> pd.Series:
-    std = x.std()
-    if not np.isfinite(std) or std == 0:
-        return x * 0.0
-    return (x - x.mean()) / std
-
-
-def combine_model_metrics(df: pd.DataFrame, weights: Dict[str, float]) -> pd.Series:
-    score = pd.Series(0.0, index=df.index)
-    for name, w in weights.items():
-        if w != 0:
-            score = score + w * zscore(df[name].fillna(df[name].mean()))
-    return score
 
 
 def evaluate_levels(dt_ckpt: str, level_seeds: List[int], cfg: DifficultyConfig,

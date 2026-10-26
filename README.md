@@ -85,6 +85,13 @@ py -3.10 -m venv .venv
 
 **参照値**: `ppo_ckpt` を指定すると、最終 PPO 方策のステージごとの成功率 `ppo_ref_success_rate` も出る。相関分析で各指標と比べられる。
 
+**重みを変えて合成し直す**: `difficulty_model` は、評価をやり直さずに `difficulty.csv` から重みを変えて作り直せる。結果は `runs/cpu/difficulty/reweighted/` に出て、元の CSV は書き換えない。重みは負にもできる。
+
+```bash
+python -m coinrun_dt.difficulty.analyze --csv runs/cpu/difficulty/difficulty.csv \
+    --weights expert_nll=1 rtg_kl=1
+```
+
 ## 構成
 
 ```
