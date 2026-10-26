@@ -1,0 +1,12 @@
+# difficulty_model の重みの組み合わせを一括で比べる（bash scripts/compare_weights.sh configs/gpu/weights.yaml）
+# 結果は out_dir に CSV で出る。results/ は git add できる
+csv: runs/gpu/difficulty/difficulty.csv
+out_dir: results/gpu
+reference: ppo_ref_success_rate
+weight_sets:
+  eval_default:   {mean_action_entropy: 1, expert_nll: 1}     # 評価時の既定の重み
+  nll:            {expert_nll: 1}
+  kl:             {rtg_kl: 1}
+  nll_kl:         {expert_nll: 1, rtg_kl: 1}
+  nll_negent:     {expert_nll: 1, mean_action_entropy: -1}    # エントロピーは逆向き（迷うほど易しい）
+  nll_kl_negent:  {expert_nll: 1, rtg_kl: 1, mean_action_entropy: -1}

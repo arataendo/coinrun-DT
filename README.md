@@ -92,6 +92,21 @@ python -m coinrun_dt.difficulty.analyze --csv runs/cpu/difficulty/difficulty.csv
     --weights expert_nll=1 rtg_kl=1
 ```
 
+**重みの組み合わせを一括で比べる**: `configs/cpu/weights.yaml` の `weight_sets` に並べた組み合わせと、各指標単体を一度に比べる。結果は `results/cpu/` に CSV で出る。`results/` は git add できる。
+
+```bash
+bash scripts/compare_weights.sh            # configs/cpu/weights.yaml
+git add results/cpu && git commit -m "重みの比較結果" && git push
+```
+
+| ファイル | 中身 |
+|---|---|
+| `weight_comparison.csv` | 1行が1つの指標または合成。`rho_vs_ppo_success`（PPO 成功率との Spearman 相関）の小さい順に並ぶ |
+| `levels.csv` | ステージごとの全指標と、各合成の値（`model_<名前>` 列） |
+| `weights.yaml` | 比べた重みの組み合わせ |
+
+`rho_vs_ppo_success` は −1 に近いほど良い（PPO が苦戦するステージを難しいと判定できている）。`strength` 列はその目安で、strong（≦ −0.7）、moderate（≦ −0.4）、weak（< 0）、reversed（≧ 0。向きが逆）の4段階。
+
 ## 構成
 
 ```
