@@ -49,8 +49,8 @@ class DifficultyConfig:
     # B. 内部指標
     reference_source: str = "ppo"             # "ppo"（最終 PPO 方策の軌跡）または "dt_greedy"
     ppo_reference_rollouts: int = 16          # PPO の参照成功率と参照軌跡に使う回数
-    model_metric_weights: Dict[str, float] = field(
-        default_factory=lambda: {"mean_action_entropy": 1.0, "expert_nll": 1.0, "rtg_kl": 0.0})
+    # 既定は expert_nll 単体（results/cpu の比較で最良。エントロピーは向きが逆だった）
+    model_metric_weights: Dict[str, float] = field(default_factory=lambda: {"expert_nll": 1.0})
     metrics_batch_size: int = 256
     # 出力
     out_dir: str = "runs/difficulty"

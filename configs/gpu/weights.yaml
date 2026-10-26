@@ -4,7 +4,7 @@ csv: runs/gpu/difficulty/difficulty.csv
 out_dir: results/gpu
 reference: ppo_ref_success_rate
 weight_sets:
-  eval_default:   {mean_action_entropy: 1, expert_nll: 1}     # 評価時の既定の重み
+  old_default:    {mean_action_entropy: 1, expert_nll: 1}     # 最初の既定の重み（エントロピーが逆向きで弱かった）
   nll:            {expert_nll: 1}
   kl:             {rtg_kl: 1}
   nll_kl:         {expert_nll: 1, rtg_kl: 1}

@@ -20,16 +20,7 @@ cd "$(dirname "$0")/.."
 
 CONFIG_DIR=${1:-configs/cpu}
 NAME=$(basename "$CONFIG_DIR")
-if [[ -x .venv/bin/python ]]; then
-  PY=.venv/bin/python
-elif [[ -x .venv/Scripts/python.exe ]]; then
-  PY=.venv/Scripts/python.exe
-else
-  PY=python
-fi
-CORES=$(nproc 2>/dev/null || echo 4)
-NUM_THREADS=${NUM_THREADS:-$(( CORES < 16 ? CORES : 16 ))}
-export OMP_NUM_THREADS=$NUM_THREADS MKL_NUM_THREADS=$NUM_THREADS PYTHONUNBUFFERED=1 PYTHONIOENCODING=utf-8
+source scripts/common.sh
 
 STEPS=(ppo collect dt difficulty)
 DONE_DIR=runs/$NAME/.done

@@ -81,7 +81,7 @@ py -3.10 -m venv .venv
 | `mean_action_entropy`, `p95_action_entropy` | DT の行動分布のエントロピー（迷い） |
 | `expert_nll` | 参照軌跡の行動に対する負の対数尤度 |
 | `rtg_kl` | 目標リターンを高くしたときと低くしたときの行動分布の KL 距離 |
-| `difficulty_model` | 評価した全ステージで z-score 化した指標の重み付き和（重みは `model_metric_weights`） |
+| `difficulty_model` | 評価した全ステージで z-score 化した指標の重み付き和（重みは `model_metric_weights`。既定は `expert_nll` 単体） |
 
 **参照値**: `ppo_ckpt` を指定すると、最終 PPO 方策のステージごとの成功率 `ppo_ref_success_rate` も出る。相関分析で各指標と比べられる。
 
@@ -107,6 +107,13 @@ git add results/cpu && git commit -m "重みの比較結果" && git push
 
 `rho_vs_ppo_success` は −1 に近いほど良い（PPO が苦戦するステージを難しいと判定できている）。`strength` 列はその目安で、strong（≦ −0.7）、moderate（≦ −0.4）、weak（< 0）、reversed（≧ 0。向きが逆）の4段階。
 
+**ホールドアウト検証**: 重みを選ぶのに使ったステージ（seed 0〜199）と別のステージ（seed 1000〜1199）で評価をやり直し、同じ比較表を作る。同じステージで選んで評価すると相関がよく見えすぎるので、ここでの数字を最終的な性能とする。サーバで約1時間かかる。
+
+```bash
+nohup bash scripts/run_holdout.sh > holdout.log 2>&1 &     # 結果は results/cpu_holdout/
+git add results/cpu_holdout && git commit -m "ホールドアウト検証の結果" && git push
+```
+
 ## 構成
 
 ```
@@ -120,6 +127,9 @@ src/coinrun_dt/
 scripts/
   setup_server.sh  サーバの初回セットアップ
   run_pipeline.sh  全工程の一括実行（再開対応）
+  compare_weights.sh  難易度指標の重みの組み合わせを比べ、results/ に CSV で保存
+  run_holdout.sh   別のステージでの評価と比較（ホールドアウト検証）
+  common.sh        上のスクリプトが共通で読み込む設定（Python の場所、スレッド数）
   smoke_test.ps1   Windows での動作確認
 ```
 

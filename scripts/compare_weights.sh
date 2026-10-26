@@ -9,14 +9,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 CONFIG=${1:-configs/cpu/weights.yaml}
-if [[ -x .venv/bin/python ]]; then
-  PY=.venv/bin/python
-elif [[ -x .venv/Scripts/python.exe ]]; then
-  PY=.venv/Scripts/python.exe
-else
-  PY=python
-fi
-export PYTHONIOENCODING=utf-8
+source scripts/common.sh
 
 "$PY" -m coinrun_dt.difficulty.compare --config "$CONFIG"
 OUT=$("$PY" -c "import yaml, sys; print(yaml.safe_load(open(sys.argv[1], encoding='utf-8'))['out_dir'])" "$CONFIG")

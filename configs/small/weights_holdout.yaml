@@ -1,0 +1,12 @@
+# ホールドアウト検証用。difficulty_model の重みの組み合わせを一括で比べる（bash scripts/run_holdout.sh configs/small の最後に自動で実行される）
+# 結果は out_dir に CSV で出る。results/ は git add できる
+csv: runs/small/difficulty_holdout/difficulty.csv
+out_dir: results/small_holdout
+reference: ppo_ref_success_rate
+weight_sets:
+  old_default:    {mean_action_entropy: 1, expert_nll: 1}     # 最初の既定の重み（エントロピーが逆向きで弱かった）
+  nll:            {expert_nll: 1}
+  kl:             {rtg_kl: 1}
+  nll_kl:         {expert_nll: 1, rtg_kl: 1}
+  nll_negent:     {expert_nll: 1, mean_action_entropy: -1}    # エントロピーは逆向き（迷うほど易しい）
+  nll_kl_negent:  {expert_nll: 1, rtg_kl: 1, mean_action_entropy: -1}
