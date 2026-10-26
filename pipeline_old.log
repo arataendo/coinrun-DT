@@ -1,0 +1,11 @@
+nohup: ignoring input
+config=configs/cpu python=.venv/bin/python threads=52 host=cayenne1
+=== ppo: 開始 2026-10-25 07:51:04 ===
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+resumed from checkpoints/cpu/ppo/step_003506176.pt (step 3506176)
+[step 3522560] train/pg_loss=-0.003063 train/v_loss=0.531 train/entropy=2.152 train/approx_kl=0.01064 train/clip_frac=0.1425 episode/return=7.8 episode/success_rate=0.78 episode/length=90.67 perf/sps=57.59
+[step 3538944] train/pg_loss=-0.004011 train/v_loss=0.3603 train/entropy=2.2 train/approx_kl=0.007102 train/clip_frac=0.07666 episode/return=8.6 episode/success_rate=0.86 episode/length=116.3 perf/sps=60.24
+[step 3555328] train/pg_loss=-0.00295 train/v_loss=0.3733 train/entropy=2.184 train/approx_kl=0.00697 train/clip_frac=0.08291 episode/return=8.7 episode/success_rate=0.87 episode/length=134.6 perf/sps=69.8
