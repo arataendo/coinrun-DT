@@ -1,0 +1,15 @@
+name,kind,weights,rho_vs_ppo_success,strength,rho_vs_difficulty_rollout
+difficulty_rollout,single,,-0.842,strong,1.0
+difficulty_model,single,,-0.811,strong,0.773
+expert_nll,single,,-0.811,strong,0.773
+model_nll,combined,expert_nll=1,-0.811,strong,0.773
+model_nll_kl,combined,expert_nll=1 rtg_kl=1,-0.795,strong,0.758
+model_nll_kl_negent,combined,expert_nll=1 rtg_kl=1 mean_action_entropy=-1,-0.762,strong,0.717
+model_nll_negent,combined,expert_nll=1 mean_action_entropy=-1,-0.747,strong,0.691
+mean_steps_to_success,single,,-0.715,strong,0.809
+model_kl,combined,rtg_kl=1,-0.702,strong,0.688
+rtg_kl,single,,-0.702,strong,0.688
+model_old_default,combined,mean_action_entropy=1 expert_nll=1,-0.349,weak,0.337
+rtg_sensitivity,single,,-0.002,weak,-0.083
+p95_action_entropy,single,,0.035,reversed,-0.001
+mean_action_entropy,single,,0.453,reversed,-0.399

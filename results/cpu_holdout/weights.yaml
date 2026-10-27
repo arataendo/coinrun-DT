@@ -1,0 +1,21 @@
+csv: runs/cpu/difficulty_holdout/difficulty.csv
+out_dir: results/cpu_holdout
+reference: ppo_ref_success_rate
+weight_sets:
+  old_default:
+    mean_action_entropy: 1
+    expert_nll: 1
+  nll:
+    expert_nll: 1
+  kl:
+    rtg_kl: 1
+  nll_kl:
+    expert_nll: 1
+    rtg_kl: 1
+  nll_negent:
+    expert_nll: 1
+    mean_action_entropy: -1
+  nll_kl_negent:
+    expert_nll: 1
+    rtg_kl: 1
+    mean_action_entropy: -1
