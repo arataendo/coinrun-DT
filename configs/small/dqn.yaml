@@ -1,0 +1,15 @@
+# 動作確認用（CPU で数分）
+total_steps: 50000
+num_envs: 16
+buffer_steps: 512
+learning_starts: 5000
+eps_decay_steps: 25000
+target_update_every: 200
+distribution_mode: easy
+num_levels: 0
+save_every_steps: 25000
+log_every_steps: 10000
+out_dir: checkpoints/small/dqn
+log_dir: runs/small/dqn
+seed: 2
+device: auto

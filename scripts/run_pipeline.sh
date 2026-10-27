@@ -34,20 +34,6 @@ if [[ -n ${FROM:-} ]]; then
   [[ $found == 1 ]] || { echo "FROM は ${STEPS[*]} のどれか: $FROM" >&2; exit 1; }
 fi
 
-run_step() {
-  local name=$1
-  shift
-  if [[ -f $DONE_DIR/$name ]]; then
-    echo "=== $name: 完了済みなので飛ばす ==="
-    return
-  fi
-  echo "=== $name: 開始 $(date '+%F %T') ==="
-  local t0=$SECONDS
-  "$PY" "$@"
-  touch "$DONE_DIR/$name"
-  echo "=== $name: 完了 $(date '+%F %T')（$(( (SECONDS - t0) / 60 )) 分）==="
-}
-
 echo "config=$CONFIG_DIR python=$PY threads=$NUM_THREADS host=$(hostname)"
 run_step ppo        -m coinrun_dt.ppo.train        --config "$CONFIG_DIR/ppo.yaml"
 run_step collect    -m coinrun_dt.data.collect     --config "$CONFIG_DIR/collect.yaml" --set overwrite=true

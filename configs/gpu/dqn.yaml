@@ -1,0 +1,25 @@
+# 参照値用の DQN（Double DQN + Dueling + 3-step）。GPU サーバ向け
+total_steps: 25000000
+num_envs: 64
+buffer_steps: 8192          # 環境ごと。全体で 8192 × 64 ≒ 52 万遷移（約 6.4GB）
+learning_starts: 100000
+train_every: 1
+updates_per_train: 1
+batch_size: 128
+lr: 0.00025
+gamma: 0.99
+n_step: 3
+target_update_every: 2000
+eps_start: 1.0
+eps_base: 0.4              # 環境ごとの ε の下限は 0.4〜0.4^8（Ape-X と同じ）
+eps_alpha: 7.0
+eps_decay_steps: 2000000
+reward_scale: 0.1
+distribution_mode: easy
+num_levels: 0            # 0 = ランダムなステージ
+save_every_steps: 1000000
+resume: true
+out_dir: checkpoints/gpu/dqn
+log_dir: runs/gpu/dqn
+seed: 2
+device: auto

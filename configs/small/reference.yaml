@@ -1,0 +1,14 @@
+# 動作確認用。small では results/ を作らないので、difficulty.csv を直接読む
+level_csvs:
+  train: runs/small/difficulty/difficulty.csv
+  holdout: runs/small/difficulty_holdout/difficulty.csv
+agents:
+  ppo_seed1: {kind: ppo, ckpt: checkpoints/small/ppo_seed1}
+  dqn:       {kind: dqn, ckpt: checkpoints/small/dqn, epsilon: 0.05}
+  random:    {kind: random}
+rollouts_per_level: 4
+distribution_mode: easy
+work_dir: runs/small/reference
+out_dir: runs/small/reference/results
+seed: 0
+device: auto

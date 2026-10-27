@@ -1,0 +1,21 @@
+# 研究室の CPU サーバ向け。PPO の forward/backward が律速なので、ステップ数は GPU 版の 25M から 10M に減らす
+# 参照値用に独立に学習する2本目の PPO（seed だけ変える。DT のデータには使わない）
+# （CoinRun easy は 10M ステップでほぼ収束する）
+total_steps: 10000000
+num_envs: 64
+num_steps: 256
+lr: 0.0005
+epochs: 3
+num_minibatches: 8
+gamma: 0.999
+gae_lambda: 0.95
+clip_coef: 0.2
+ent_coef: 0.01
+distribution_mode: easy
+num_levels: 0            # 0 = ランダムなステージ
+save_every_steps: 500000
+resume: true
+out_dir: checkpoints/cpu/ppo_seed1
+log_dir: runs/cpu/ppo_seed1
+seed: 1
+device: cpu

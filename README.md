@@ -114,6 +114,27 @@ nohup bash scripts/run_holdout.sh > holdout.log 2>&1 &     # 結果は results/c
 git add results/cpu_holdout && git commit -m "ホールドアウト検証の結果" && git push
 ```
 
+**別のエージェントでの検証**: 参照値 `ppo_ref_success_rate` は、DT の学習データを作った PPO 自身の成功率なので循環がある。そこで次の3つのエージェントを用意し、同じステージ（seed 0〜199 と 1000〜1199）の成功率を取り直して、各指標と比べる。
+
+- seed だけ違う、独立に学習した PPO（`ppo_seed1.yaml`）
+- DQN（`dqn.yaml`。Double DQN + Dueling + 3-step、環境ごとに違う ε）。PPO とは別の種類のエージェント。CPU で 1000 万ステップでどこまで学習できるかは未確認なので、`runs/cpu/logs/dqn.log` の `success_rate_eps<0.01`（ほぼ greedy な環境の成功率）を見て、ランダム（約 0.35）を上回っているか確かめる
+- ランダム方策。学習しないので、ステージの構造だけで決まる難しさを表す
+
+指標は評価し直さず、`results/cpu/` と `results/cpu_holdout/` の `levels.csv` を使う。サーバでは、2つの学習を並列にすると約5時間、その後の評価に約30分かかる。
+
+```bash
+nohup bash scripts/run_reference.sh > reference.log 2>&1 &   # 学習ログは runs/cpu/logs/
+git add results/cpu_reference && git commit -m "別のエージェントでの検証結果" && git push
+```
+
+| ファイル | 中身 |
+|---|---|
+| `comparison.csv` | 指標 × 参照エージェント（`ppo_base` が元の PPO、`ref_<名前>` が新しいもの）× ステージの組（train / holdout / all）ごとの Spearman 相関 |
+| `agreement.csv` | 参照エージェント同士の Spearman 相関。エージェント同士でもこの程度しか一致しないという、指標が届きうる上限の目安 |
+| `levels.csv` | ステージごとの指標と、各エージェントの成功率 |
+
+DQN の学習を最初からやり直すときは `checkpoints/cpu/dqn` と `runs/cpu/.done/dqn` を消す。評価をやり直すときは `runs/cpu/reference/` を消す。
+
 ## 構成
 
 ```
@@ -121,15 +142,17 @@ src/coinrun_dt/
   envs.py          環境生成（gym3 API。num_levels=0 でランダムなステージ、make_level_env で特定のステージ）
   runner.py        ベクトル化環境でエピソードを集める共通ループ（PPO と DT の両方で使う）
   ppo/             IMPALA CNN の Actor-Critic と PPO
+  dqn/             DQN（参照値を別の種類のエージェントで取るため）
   data/            軌跡収集、DT 用データセット（メモリマップのキャッシュ）
   dt/              Decision Transformer、オンライン実行（DTPolicy）、軌跡に沿ったロジット計算
-  difficulty/      難易度指標、評価関数、相関分析
+  difficulty/      難易度指標、評価関数、相関分析、別のエージェントでの検証（reference.py）
 scripts/
   setup_server.sh  サーバの初回セットアップ
   run_pipeline.sh  全工程の一括実行（再開対応）
   compare_weights.sh  難易度指標の重みの組み合わせを比べ、results/ に CSV で保存
   run_holdout.sh   別のステージでの評価と比較（ホールドアウト検証）
-  common.sh        上のスクリプトが共通で読み込む設定（Python の場所、スレッド数）
+  run_reference.sh 別のエージェント（PPO seed 違い、DQN、ランダム）での参照値と比較
+  common.sh        上のスクリプトが共通で読み込む設定（Python の場所、スレッド数、工程の実行）
   smoke_test.ps1   Windows での動作確認
 ```
 
