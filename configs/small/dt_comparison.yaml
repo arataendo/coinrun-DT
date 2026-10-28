@@ -1,0 +1,9 @@
+# 動作確認用。small では results/ を作らないので、difficulty.csv を直接読む
+runs:
+  mixed:
+    train: runs/small/difficulty/difficulty.csv
+    holdout: runs/small/difficulty_holdout/difficulty.csv
+  expert:
+    train: runs/small/difficulty_expert/difficulty.csv
+    holdout: runs/small/difficulty_expert_holdout/difficulty.csv
+out_dir: runs/small/dt_comparison

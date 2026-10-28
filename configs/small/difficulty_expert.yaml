@@ -1,0 +1,14 @@
+# 熟練者 DT での難易度評価（scripts/run_expert.sh）。DT 以外は difficulty.yaml と同じ
+dt_ckpt: checkpoints/small/dt_expert/dt_final.pt
+ppo_ckpt: checkpoints/small/ppo
+level_start: 0
+num_eval_levels: 10
+target_returns: [10.0, 0.0]
+rollouts_per_level: 4
+reference_source: ppo
+ppo_reference_rollouts: 4
+model_metric_weights:            # 既定は expert_nll 単体（results/cpu の比較で最良。エントロピーは逆向きだった）
+  expert_nll: 1.0
+out_dir: runs/small/difficulty_expert
+seed: 0
+device: auto

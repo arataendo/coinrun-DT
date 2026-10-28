@@ -1,0 +1,9 @@
+# 学習データの違う DT の難易度指標を並べて比べる（scripts/run_expert.sh の最後に実行）
+runs:
+  mixed:                                   # PPO の各段階の軌跡を混ぜた DT（configs/cpu/dt.yaml）
+    train: results/cpu/levels.csv
+    holdout: results/cpu_holdout/levels.csv
+  expert:                                  # 最終 PPO の軌跡だけの DT（configs/cpu/dt_expert.yaml）
+    train: results/cpu_expert/levels.csv
+    holdout: results/cpu_expert_holdout/levels.csv
+out_dir: results/cpu_dt_comparison

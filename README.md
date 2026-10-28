@@ -135,6 +135,24 @@ git add results/cpu_reference && git commit -m "別のエージェントでの�
 
 DQN の学習を最初からやり直すときは `checkpoints/cpu/dqn` と `runs/cpu/.done/dqn` を消す。評価をやり直すときは `runs/cpu/reference/` を消す。
 
+**熟練者 DT（最終 PPO だけで学習した DT）**: 通常の DT は PPO の各段階の軌跡を混ぜて学習するので、下手なエージェントにも上手いエージェントにもなれる。ここでは、いちばん強い最終 PPO の軌跡だけで DT を学習し、その DT で難易度を評価して、混ぜた DT と比べる。
+
+- 揃える条件: エピソード数（3072）、モデル、学習の設定、評価するステージ（seed 0〜199 と 1000〜1199）
+- 変えるもの: 学習データの元になるチェックポイント
+- 時間: サーバで約5時間（DT の学習に約2.5時間、2組の難易度評価に約1時間ずつ）
+
+```bash
+nohup bash scripts/run_expert.sh > expert.log 2>&1 &
+git add results/cpu_expert results/cpu_expert_holdout results/cpu_dt_comparison && git commit -m "熟練者 DT の結果" && git push
+```
+
+| 出力 | 中身 |
+|---|---|
+| `results/cpu_expert/`, `results/cpu_expert_holdout/` | 熟練者 DT での、指標単体と重みの組み合わせの比較（`weight_comparison.csv` など。見方は上と同じ） |
+| `results/cpu_dt_comparison/comparison.csv` | 指標 × ステージの組ごとの、PPO 成功率との Spearman 相関。`rho_mixed` が混ぜた DT、`rho_expert` が熟練者 DT |
+| `results/cpu_dt_comparison/summary.csv` | 各 DT の平均成功率（目標リターン 10）と、PPO の平均成功率 |
+| `results/cpu_dt_comparison/levels.csv` | ステージごとの、両方の DT の指標 |
+
 ## 構成
 
 ```
@@ -145,13 +163,14 @@ src/coinrun_dt/
   dqn/             DQN（参照値を別の種類のエージェントで取るため）
   data/            軌跡収集、DT 用データセット（メモリマップのキャッシュ）
   dt/              Decision Transformer、オンライン実行（DTPolicy）、軌跡に沿ったロジット計算
-  difficulty/      難易度指標、評価関数、相関分析、別のエージェントでの検証（reference.py）
+  difficulty/      難易度指標、評価関数、相関分析、別のエージェントでの検証（reference.py）、DT 同士の比較（compare_dts.py）
 scripts/
   setup_server.sh  サーバの初回セットアップ
   run_pipeline.sh  全工程の一括実行（再開対応）
   compare_weights.sh  難易度指標の重みの組み合わせを比べ、results/ に CSV で保存
   run_holdout.sh   別のステージでの評価と比較（ホールドアウト検証）
   run_reference.sh 別のエージェント（PPO seed 違い、DQN、ランダム）での参照値と比較
+  run_expert.sh    最終 PPO だけで学習した DT（熟練者 DT）を作り、難易度を評価して、混ぜた DT と比較
   common.sh        上のスクリプトが共通で読み込む設定（Python の場所、スレッド数、工程の実行）
   smoke_test.ps1   Windows での動作確認
 ```

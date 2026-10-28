@@ -1,0 +1,18 @@
+# 最終 PPO の軌跡だけで学習する DT（熟練者 DT）。モデルと学習の設定は dt.yaml と同じ
+data_dir: data/small_expert
+context_len: 10
+n_layer: 2
+n_head: 2
+n_embd: 64
+batch_size: 16
+warmup_iters: 50
+max_iters: 300
+num_workers: 0
+eval_every: 150
+eval_episodes: 8
+log_every: 50
+save_every: 0
+out_dir: checkpoints/small/dt_expert
+log_dir: runs/small/dt_expert
+seed: 0
+device: auto
