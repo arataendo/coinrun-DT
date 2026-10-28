@@ -1,0 +1,18 @@
+# 熟練者 DT での難易度評価（scripts/run_expert.sh）。DT 以外は difficulty.yaml と同じ
+dt_ckpt: checkpoints/cpu_v2/dt_expert/dt_final.pt
+ppo_ckpt: checkpoints/cpu_v2/ppo        # ディレクトリなら最新のチェックポイント
+level_start: 0
+num_eval_levels: 200
+distribution_mode: easy
+target_returns: [10.0, 5.0, 0.0]
+rollouts_per_level: 16
+sample: true
+temperature: 1.0
+steps_weight: 0.5
+reference_source: ppo
+ppo_reference_rollouts: 16
+model_metric_weights:            # 既定は expert_nll 単体（results/cpu の比較で最良。エントロピーは逆向きだった）
+  expert_nll: 1.0
+out_dir: runs/cpu_v2/difficulty_expert
+seed: 0
+device: cpu

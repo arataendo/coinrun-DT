@@ -3,6 +3,7 @@
 #   NUM_THREADS  torch の CPU スレッド数（既定: コア数と 16 の小さい方。この規模のモデルでは
 #                スレッドを増やしすぎると、取り合いでかえって遅くなる）
 #   run_step     工程の実行と完了の印（$DONE_DIR を先に決めておく）
+#   lock         二重起動の防止（$NAME を先に決めておく）
 if [[ -x .venv/bin/python ]]; then
   PY=.venv/bin/python
 elif [[ -x .venv/Scripts/python.exe ]]; then
@@ -27,4 +28,17 @@ run_step() {
   "$PY" "$@"
   touch "$DONE_DIR/$name"
   echo "=== $name: 完了 $(date '+%F %T')（$(( (SECONDS - t0) / 60 )) 分）==="
+}
+
+# lock 名前: 同じ設定で同じスクリプトが動いていれば、二重に起動せずに止める（前回の PID が残っていても、
+# そのプロセスが終わっていれば起動する）。$NAME を先に決めておく
+lock() {
+  local file=runs/$NAME/.lock_$1
+  mkdir -p "runs/$NAME"
+  if [[ -f $file ]] && kill -0 "$(cat "$file")" 2>/dev/null; then
+    echo "すでに動いている: $1（設定 $NAME、PID $(cat "$file")）。止めるときは kill $(cat "$file")" >&2
+    exit 1
+  fi
+  echo $$ > "$file"
+  trap "rm -f '$file'" EXIT
 }

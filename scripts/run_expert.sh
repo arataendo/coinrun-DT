@@ -15,6 +15,7 @@ cd "$(dirname "$0")/.."
 CONFIG_DIR=${1:-configs/cpu}
 NAME=$(basename "$CONFIG_DIR")
 source scripts/common.sh
+lock expert
 DONE_DIR=runs/$NAME/.done
 mkdir -p "$DONE_DIR"
 

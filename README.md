@@ -34,9 +34,12 @@ tail -f pipeline.log
 |---|---|---|
 | `configs/small/` | 動作確認（このリポジトリのテスト用、数分） | PPO 5 万ステップ、48 エピソード、10 ステージ |
 | `configs/cpu/` | 研究室の CPU サーバ | PPO 1000 万ステップ、6 チェックポイント × 512 エピソード、200 ステージ |
+| `configs/cpu_v2/` | 研究室の CPU サーバ（PPO を強くした版） | PPO 2500 万ステップ・学習率を線形に下げる。収集は 0〜2500 万の 6 チェックポイント × 512 エピソード。ほかは cpu と同じ |
 | `configs/gpu/` | GPU サーバ | PPO 2500 万ステップ、6 × 2048 エピソード、1000 ステージ |
 
-`bash scripts/run_pipeline.sh configs/gpu` のように、設定のディレクトリを引数で渡す。各工程は単体でも動かせる。そのときは `--set key=value` で設定を上書きできる。
+`bash scripts/run_pipeline.sh configs/gpu` のように、設定のディレクトリを引数で渡す。各工程は単体でも動かせる。そのときは `--set key=value` で設定を上書きできる。出力先（`checkpoints/`, `data/`, `runs/`, `results/` の下）は設定のディレクトリ名で分かれるので、`configs/cpu_v2` で回しても `cpu` の結果は残る。
+
+PPO の学習率は `lr_schedule` で決める。`constant`（既定、cpu）は一定のまま、`linear`（cpu_v2）は `total_steps` にかけて 0 まで線形に下げる。cpu の PPO は、学習率が一定のまま 800 万ステップあたりで成功率が 0.84 から 0.73 に落ちた（`results/cpu_logs/ppo_metrics.jsonl`）。
 
 ```bash
 python -m coinrun_dt.ppo.train        --config configs/cpu/ppo.yaml --set total_steps=5000000

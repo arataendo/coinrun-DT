@@ -32,6 +32,7 @@ class PPOConfig:
     num_envs: int = 64
     num_steps: int = 256
     lr: float = 5e-4
+    lr_schedule: str = "constant"  # "linear" なら、total_steps にかけて lr から 0 まで線形に下げる
     epochs: int = 3
     num_minibatches: int = 8
     gamma: float = 0.999
@@ -110,6 +111,14 @@ def try_resume(model: ActorCritic, optimizer: torch.optim.Optimizer,
     return step
 
 
+def lr_at(step: int, cfg: PPOConfig) -> float:
+    if cfg.lr_schedule == "constant":
+        return cfg.lr
+    if cfg.lr_schedule == "linear":
+        return cfg.lr * max(0.0, 1.0 - step / cfg.total_steps)
+    raise ValueError(f"未知の lr_schedule: {cfg.lr_schedule!r}（constant / linear）")
+
+
 def train(cfg: PPOConfig) -> None:
     set_seed(cfg.seed)
     device = get_device(cfg.device)
@@ -145,6 +154,9 @@ def train(cfg: PPOConfig) -> None:
             save_checkpoint(model, optimizer, reward_norm, cfg, global_step)
             next_save += cfg.save_every_steps
         t0 = time.time()
+        lr = lr_at(global_step, cfg)
+        for group in optimizer.param_groups:
+            group["lr"] = lr
 
         # ---- ロールアウト ----
         for t in range(T):
@@ -231,6 +243,7 @@ def train(cfg: PPOConfig) -> None:
             metrics["episode/return"] = float(np.mean(recent_returns))
             metrics["episode/success_rate"] = float(np.mean(recent_success))
             metrics["episode/length"] = float(np.mean(recent_lengths))
+        metrics["train/lr"] = lr
         metrics["perf/sps"] = batch_size / (time.time() - t0)
         logger.log(global_step, metrics)
 

@@ -1,0 +1,15 @@
+# DT のデータ元とは別のエージェントで参照値を取り直し、難易度指標と比べる（scripts/run_reference.sh）
+# 指標は評価し直さず、results/ の比較結果（levels.csv）を使う。結果は out_dir に CSV で出る（git add できる）
+level_csvs:
+  train: results/cpu_v2/levels.csv            # 重みを選ぶのに使ったステージ
+  holdout: results/cpu_v2_holdout/levels.csv
+agents:
+  ppo_seed1: {kind: ppo, ckpt: checkpoints/cpu_v2/ppo_seed1}    # seed だけ違う、独立に学習した PPO
+  dqn:       {kind: dqn, ckpt: checkpoints/cpu_v2/dqn, epsilon: 0.05}   # 別の種類のエージェント
+  random:    {kind: random}                                  # 学習なし（ステージの構造だけで決まる難しさ）
+rollouts_per_level: 16
+distribution_mode: easy
+work_dir: runs/cpu_v2/reference
+out_dir: results/cpu_v2_reference
+seed: 0
+device: cpu

@@ -1,0 +1,21 @@
+# cpu の PPO を、学習率を徐々に下げて 2500 万ステップ（Procgen 論文の標準）学習するようにしたもの。
+# サーバで約 14 時間かかる。ほかの設定と出力先の名前の付け方は configs/cpu と同じ
+total_steps: 25000000
+num_envs: 64
+num_steps: 256
+lr: 0.0005
+lr_schedule: linear     # 学習率を 0 まで線形に下げる（cpu では一定にしていて、後半に成功率が落ちた）
+epochs: 3
+num_minibatches: 8
+gamma: 0.999
+gae_lambda: 0.95
+clip_coef: 0.2
+ent_coef: 0.01
+distribution_mode: easy
+num_levels: 0            # 0 = ランダムなステージ
+save_every_steps: 1000000
+resume: true
+out_dir: checkpoints/cpu_v2/ppo
+log_dir: runs/cpu_v2/ppo
+seed: 0
+device: cpu

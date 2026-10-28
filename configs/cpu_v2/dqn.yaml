@@ -1,0 +1,26 @@
+# 参照値用の DQN（Double DQN + Dueling + 3-step）。研究室の CPU サーバ向け
+# PPO とほぼ同じ速さで、1000 万ステップに約 5 時間かかる。経験再生のバッファは約 1.6GB のメモリを使う
+total_steps: 10000000
+num_envs: 64
+buffer_steps: 2048          # 環境ごと。全体で 2048 × 64 ≒ 13 万遷移
+learning_starts: 100000
+train_every: 1
+updates_per_train: 1
+batch_size: 128
+lr: 0.00025
+gamma: 0.99
+n_step: 3
+target_update_every: 2000
+eps_start: 1.0
+eps_base: 0.4              # 環境ごとの ε の下限は 0.4〜0.4^8（Ape-X と同じ）
+eps_alpha: 7.0
+eps_decay_steps: 1000000
+reward_scale: 0.1
+distribution_mode: easy
+num_levels: 0            # 0 = ランダムなステージ
+save_every_steps: 1000000
+resume: true
+out_dir: checkpoints/cpu_v2/dqn
+log_dir: runs/cpu_v2/dqn
+seed: 2
+device: cpu

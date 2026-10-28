@@ -11,7 +11,9 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 CONFIG_DIR=${1:-configs/cpu}
+NAME=$(basename "$CONFIG_DIR")
 source scripts/common.sh
+lock holdout
 
 echo "config=$CONFIG_DIR python=$PY threads=$NUM_THREADS host=$(hostname)"
 echo "=== difficulty (holdout): 開始 $(date '+%F %T') ==="

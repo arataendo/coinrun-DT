@@ -21,6 +21,7 @@ cd "$(dirname "$0")/.."
 CONFIG_DIR=${1:-configs/cpu}
 NAME=$(basename "$CONFIG_DIR")
 source scripts/common.sh
+lock pipeline
 
 STEPS=(ppo collect dt difficulty)
 DONE_DIR=runs/$NAME/.done
